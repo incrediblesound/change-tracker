@@ -17,17 +17,24 @@ describe('diff()', function () {
     expect(list).to.be.a('object');
   });
 
-  it('saves addative changes', function () {
+  it('constructs newest version', function () {
+    list.saveChange([1,2,3,5,6])
+    expect(list.getData().toString()).to.equal('1,2,3,5,6');
+  })
+
+  it('saves addative + subtractive changes', function () {
     list.saveChange([1,2,3,5,6])
     list.saveChange([1,2])
-    expect(list.viewChange(1).toString()).to.equal('1,2,3,5,6');
+    expect(list.viewChange(0).toString()).to.equal('1,2,3,5,6');
+    expect(list.viewChange(1).toString()).to.equal('1,2');
   });
 
-
-  it('saves subtractive changes', function () {
-    list.saveChange([1,2])
-    list.saveChange([1,2,7])
-    expect(list.viewChange(1).toString()).to.equal('1,2');
+  it('stores changes for individual indices', function () {
+    list.changeCells(
+      {index: 2, change: 5}, 
+      {index: 4, change: 6}
+      );
+    expect(list.getData().toString()).to.equal('1,2,5,4,6');
   });
 
   // Add more assertions here
