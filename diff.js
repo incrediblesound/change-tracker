@@ -1,8 +1,4 @@
-var Difference = function(old, fresh){
-//  this.index = index;
-  this.old = old;
-  this.fresh = fresh;
-}
+
 
 var Tracker = function(array){
   this.changes = {};
@@ -10,33 +6,30 @@ var Tracker = function(array){
   this.count = 0;
 }
 
-Tracker.prototype.saveChange = function(array){
+Tracker.prototype.saveChange = function(input){
   var changes = [];
-  var length = Math.max(array.length, this.data.length);
+  var length = Math.max(input.length, this.data.length);
   for(var i = 0, l = length; i < l; i++){
-    changes[i] = [];
     var old = this.data[i];
-    var fresh = array[i];
+    var fresh = input[i];
     if(fresh !== old){
-      changes[i].push(new Difference(old, fresh))
+      changes.push({old: old, index: i});
     }
   }
   this.changes[this.count] = changes;
-  this.data = array;
+  this.data = input;
   this.count++;
 }
 
-Tracker.prototype.viewChange = function(index){
-  var result = [];
+Tracker.prototype.viewChange = function(index, isString){
+  debugger;
+  var result = this.data;
   var change = this.changes[index];
   var length = change.length;
+  var diff;
   for(var i = 0, l = length; i < l; i++){
-    if(!change[i][0] && this.data[i] !== undefined){
-      result.push(this.data[i]);
-    } 
-    else if(change[i][0] && change[i][0].old){
-      result.push(change[i][0].old);
-    }
+    diff = change[i];
+    result[diff.index] = diff.old;
   }
-  return result;
+  return isString ? result.join('') : result;
 }
